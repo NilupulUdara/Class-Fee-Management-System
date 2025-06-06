@@ -1,0 +1,54 @@
+<div
+  class="min-h-screen flex flex-col items-center justify-center bg-cover bg-center"
+  [ngStyle]="{ 'background-image': 'url(assets/images/bg.jpg)' }"
+>
+  <div
+    class="bg-white/50 p-8 rounded-lg shadow-lg text-center max-w-2xl mx-4"
+    [@fadeSlideDown]
+  >
+    <h1
+      class="text-5xl font-bold text-gray-800 mb-6"
+      [@fadeSlideDown]
+    >
+      Class Fee Management System
+    </h1>
+
+    <p
+      class="text-gray-700 mb-8 text-lg"
+      [@fadeSlideUp]
+    >
+      Efficiently manage student fee payments with our streamlined and secure system.
+      This platform helps automate fee tracking, generate reports, and process payroll with accuracy.
+    </p>
+
+    <button
+      class="bg-blue-700 text-white px-6 py-3 rounded-lg hover:bg-blue-600 transition duration-300 shadow-md text-lg font-semibold flex items-center justify-center gap-2"
+      (click)="handleClick()"
+      [disabled]="loading"
+    >
+      <ng-container *ngIf="loading; else startText">
+        <svg
+          class="animate-spin h-6 w-6 text-white"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          ></circle>
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+          ></path>
+        </svg>
+      </ng-container>
+      <ng-template #startText>Get Started Now</ng-template>
+    </button>
+  </div>
+</div>

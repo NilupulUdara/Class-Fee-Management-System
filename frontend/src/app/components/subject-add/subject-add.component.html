@@ -1,0 +1,61 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-100 px-4 pt-2 pb-48">
+  <div class="bg-white p-8 rounded-lg shadow-lg w-full max-w-2xl relative">
+    <h2 class="text-[28px] font-bold mb-6 text-blue-600 text-center pb-8">
+      Add Subject
+    </h2>
+
+    <form (submit)="handleSubmit($event)" class="space-y-4 text-bold text-lg">
+      <div class="grid grid-cols-3 items-center gap-4">
+        <label for="subjectCode" class="text-base font-medium text-gray-700">
+          Subject Code
+        </label>
+        <input
+          type="text"
+          id="subjectCode"
+          [(ngModel)]="subjectCode"
+          name="subjectCode"
+          required
+          class="col-span-2 px-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div class="grid grid-cols-3 items-center gap-4">
+        <label for="subjectName" class="text-base font-medium text-gray-700">
+          Subject Name
+        </label>
+        <input
+          type="text"
+          id="subjectName"
+          [(ngModel)]="subjectName"
+          name="subjectName"
+          required
+          class="col-span-2 px-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div class="grid grid-cols-3 items-center gap-4">
+        <label for="subjectFee" class="text-base font-medium text-gray-700">
+          Subject Fee
+        </label>
+        <input
+          type="text"
+          id="subjectFee"
+          [(ngModel)]="subjectFee"
+          name="subjectFee"
+          required
+          class="col-span-2 px-4 py-2 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div class="pt-4">
+        <button
+          type="submit"
+          class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300 font-medium"
+          [disabled]="loading"
+        >
+          {{ loading ? 'Saving...' : 'Add Subject' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

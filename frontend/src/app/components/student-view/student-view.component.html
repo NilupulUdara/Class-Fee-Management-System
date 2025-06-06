@@ -1,0 +1,66 @@
+<div class="mx-auto p-6 rounded-lg w-11/12 max-w-4xl relative">
+    <h6 class="text-[32px] font-semibold text-center text-gray-700 mb-8">
+        Student Records
+    </h6>
+
+    <div class="flex justify-between mb-4">
+        <button type="button" (click)="navigateToAdd()"
+            class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition duration-200">
+            Add New Student
+        </button>
+    </div>
+
+    <div class="relative overflow-x-auto rounded-lg shadow border border-gray-200 bg-white">
+        <table class="w-full text-sm text-left text-black">
+            <thead class="text-sm text-black uppercase bg-indigo-500">
+                <tr class="text-center">
+                    <th class="px-6 py-3">ID</th>
+                    <th class="px-6 py-3">Name</th>
+                    <th class="px-6 py-3">Grade</th>
+                    <th class="px-6 py-3">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let student of students"
+                    class="bg-white border-b hover:bg-gray-50 text-center transition duration-150">
+                    <td class="px-6 py-3 text-base">{{ student.sid }}</td>
+                    <td class="px-6 py-3 text-base">{{ student.studentName }}</td>
+                    <td class="px-6 py-3 text-base">{{ student.studentGrade }}</td>
+                    <td class="px-6 py-3">
+                        <button (click)="openDeleteModal(student)"
+                            class="text-sm px-4 py-1.5 bg-red-500 hover:bg-red-400 text-white rounded shadow transition-all duration-150">
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngIf="students.length === 0">
+                    <td colspan="4" class="px-6 py-4 text-center text-gray-500">
+                        No students available
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div class="bg-white rounded-lg p-6 w-80">
+            <h2 class="text-lg font-semibold mb-2">Confirm Delete</h2>
+            <p class="text-sm mb-4">
+                Are you sure you want to delete
+                <span class="font-bold">{{ selectedStudent?.studentName }}</span> (ID:
+                {{ selectedStudent?.sid }})?
+            </p>
+            <div class="flex justify-end space-x-3">
+                <button (click)="closeModal()"
+                    class="bg-gray-500 hover:bg-gray-600 text-white text-sm px-4 py-2 rounded">
+                    Cancel
+                </button>
+                <button (click)="deleteStudent()"
+                    class="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-2 rounded">
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

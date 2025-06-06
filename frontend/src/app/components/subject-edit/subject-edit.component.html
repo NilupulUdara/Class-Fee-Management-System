@@ -1,0 +1,115 @@
+<div class="p-6 bg-white rounded shadow-md max-w-4xl mx-auto">
+  <h1 class="text-2xl font-bold mb-4">Edit Subject Fee</h1>
+
+  <table class="w-full text-left border-collapse">
+    <thead class="bg-blue-600 text-white">
+      <tr>
+        <th class="p-2">Subject Code</th>
+        <th class="p-2">Subject Name</th>
+        <th class="p-2">Fee (Rs.)</th>
+        <th class="p-2">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngIf="subjects.length === 0">
+        <td colspan="4" class="text-center p-4 text-gray-500">
+          No subjects found.
+        </td>
+      </tr>
+      <tr *ngFor="let subject of subjects" class="border-b">
+        <td class="p-2">{{ subject.subjectCode }}</td>
+        <td class="p-2">{{ subject.subjectName }}</td>
+        <td class="p-2">Rs. {{ subject.fee }}</td>
+        <td class="p-2">
+          <button
+            class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+            (click)="openModal(subject)"
+          >
+            Edit
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Modal -->
+<div
+  *ngIf="isModalOpen"
+  class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
+>
+  <div class="bg-white p-6 rounded shadow-md w-full max-w-md">
+    <h2 class="text-xl font-semibold mb-4">
+      {{ currentSubject?.subjectName }} ({{ currentSubject?.subjectCode }})
+    </h2>
+
+    <div class="mb-4">
+      <label class="block font-medium mb-1">Subject Name</label>
+      <input
+        type="text"
+        [value]="currentSubject?.subjectName"
+        readonly
+        class="w-full p-2 border rounded bg-gray-100"
+      />
+    </div>
+
+    <div class="mb-6">
+      <label class="block font-medium mb-1">Fee (Rs.)</label>
+      <input
+        type="number"
+        [value]="currentSubject?.fee"
+        (input)="handleFeeChange($event)"
+        class="w-full p-2 border rounded"
+        min="0"
+        step="0.01"
+      />
+    </div>
+
+    <div class="flex justify-between mt-8">
+      <div>
+        <button
+          *ngIf="!deleteConfirm"
+          (click)="deleteConfirm = true"
+          class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors"
+          [disabled]="loading"
+        >
+          Delete Subject
+        </button>
+        <div *ngIf="deleteConfirm" class="space-x-2">
+          <span class="text-red-600 font-medium">Are you sure?</span>
+          <button
+            (click)="handleDelete()"
+            class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
+            [disabled]="loading"
+          >
+            {{ loading ? 'Deleting...' : 'Confirm Delete' }}
+          </button>
+          <button
+            (click)="deleteConfirm = false"
+            class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors"
+            [disabled]="loading"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="!deleteConfirm" class="space-x-2">
+        <button
+          (click)="closeModal()"
+          class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors"
+          [disabled]="loading"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="handleUpdate()"
+          class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          [disabled]="loading"
+        >
+          {{ loading ? 'Updating...' : 'Update Subject' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

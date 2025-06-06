@@ -1,0 +1,62 @@
+<div class="p-6 max-w-3xl mx-auto bg-white rounded shadow">
+  <h2 class="text-xl font-bold mb-6 text-center">Fees Collection</h2>
+
+  <!-- Select Student -->
+  <div class="mb-4 flex items-center gap-2 ml-1">
+    <label class="w-32 text-gray-700 font-medium">Select Student:</label>
+    <select class="w-48 p-2 border rounded text-sm" [ngModel]="selectedStudent()?.sid"
+      (ngModelChange)="updateSelectedStudentById($event)" [disabled]="isLoading()">
+      <option [ngValue]="null">-- Select Student --</option>
+      <option *ngFor="let student of studentsList()" [ngValue]="student.sid">
+        {{ student.sid }} - {{ student.studentName }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Select Month -->
+  <div class="mb-6 flex items-center gap-4 ml-1">
+    <label class="w-32 text-gray-700 font-medium">Select Month:</label>
+    <select class="w-48 border rounded p-1.5 text-sm text-gray-700" [(ngModel)]="selectedMonthYear()"
+      (ngModelChange)="selectedMonthYear.set($event)" [disabled]="isLoading()">
+      <option *ngFor="let month of availableMonths()" [value]="month">
+        {{ month }}
+      </option>
+    </select>
+  </div>
+
+  <!-- Student Info -->
+  <div *ngIf="selectedStudent()" class="mb-4 p-2 bg-gray-50 rounded text-sm">
+    <span class="font-medium">Selected:</span>
+    {{ selectedStudent()?.sid }} - {{ selectedStudent()?.studentName }}
+  </div>
+
+  <!-- Subject Selection -->
+  <div class="mb-4 flex gap-4 ml-1">
+    <label class="w-32 text-gray-700 font-medium pt-2">Select Subjects:</label>
+    <div class="grid grid-cols-2 gap-2 flex-1">
+      <label *ngFor="let subject of subjects()" class="flex items-center gap-1 text-sm">
+        <input type="checkbox" [checked]="selectedSubjects().some(s => s.subjectCode === subject.subjectCode)"
+          (change)="toggleSubject(subject)" [disabled]="isLoading() || !selectedStudent()"
+          class="h-3 w-3 text-blue-600 rounded focus:ring-blue-500" />
+        {{ subject.subjectCode }} - {{ subject.subjectName }} (Rs. {{ subject.fee }})
+      </label>
+    </div>
+  </div>
+
+  <!-- Total Fee -->
+  <div class="mb-4 text-md font-semibold text-center px-4 py-2 rounded bg-blue-100">
+    Total Fee: Rs. {{ totalFee().toFixed(2) }}
+  </div>
+
+  <!-- Buttons -->
+  <div class="flex justify-center gap-4">
+    <button class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm"
+      (click)="handleGenerateReceipt()"
+      [disabled]="!selectedStudent() || selectedSubjects().length === 0 || isLoading()">
+      Generate Receipt
+    </button>
+    <button class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500 text-sm" (click)="handleClear()">
+      Clear
+    </button>
+  </div>
+</div>

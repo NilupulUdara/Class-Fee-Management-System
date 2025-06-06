@@ -1,0 +1,46 @@
+<div
+    class="min-h-screen w-full bg-gradient-to-r from-blue-500 via-purple-600 to-pink-500 p-6 flex flex-col items-center justify-center">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-7xl">
+
+        <!-- Student Administration Card -->
+        <div
+            class="backdrop-blur-md bg-white/30 border border-white/40 rounded-2xl p-6 shadow-xl flex flex-col items-center text-center transition transform hover:-translate-y-1 hover:shadow-2xl">
+            <h2 class="text-xl font-semibold text-white mb-4">Student Administration</h2>
+            <img src="assets/manage.jpeg" alt="Manage" class="w-full h-40 object-cover rounded-lg mb-4" />
+            <div class="w-full">
+                <button routerLink="/studentadd"
+                    class="w-full py-2 bg-white text-black font-medium mb-2 rounded hover:bg-blue-100 transition">Add
+                    New Students</button>
+                <button routerLink="/studentview"
+                    class="w-full py-2 bg-white text-black font-medium rounded hover:bg-blue-100 transition">View
+                    Student</button>
+            </div>
+        </div>
+
+        <!-- Calculate Fee Card -->
+        <div
+            class="backdrop-blur-md bg-white/30 border border-white/40 rounded-2xl p-6 shadow-xl flex flex-col items-center text-center transition transform hover:-translate-y-1 hover:shadow-2xl">
+            <h2 class="text-xl font-semibold text-white mb-4">Calculate Fee</h2>
+            <img src="assets/salary.jpg" alt="Fee" class="w-full h-40 object-cover rounded-lg mb-4" />
+            <button routerLink="/fees"
+                class="w-full py-2 bg-white text-black font-semibold rounded hover:bg-blue-100 transition">Calculate
+                Fee</button>
+        </div>
+
+        <!-- Manage Subjects Card -->
+        <div
+            class="backdrop-blur-md bg-white/30 border border-white/40 rounded-2xl p-6 shadow-xl flex flex-col items-center text-center transition transform hover:-translate-y-1 hover:shadow-2xl">
+            <h2 class="text-xl font-semibold text-white mb-4">Manage Subjects</h2>
+            <img src="assets/product.jpg" alt="Subjects" class="w-full h-40 object-cover rounded-lg mb-4" />
+            <div class="w-full">
+                <button routerLink="/subjectedit"
+                    class="w-full py-2 bg-white text-black font-medium mb-2 rounded hover:bg-blue-100 transition">Edit
+                    Subjects</button>
+                <button routerLink="/subjectadd"
+                    class="w-full py-2 bg-white text-black font-medium rounded hover:bg-blue-100 transition">Add New
+                    Subjects</button>
+            </div>
+        </div>
+
+    </div>
+</div>
