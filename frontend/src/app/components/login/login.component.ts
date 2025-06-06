@@ -7,11 +7,12 @@ import { FormsModule, NgModel } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
-  standalone: true, 
-  imports: [CommonModule,FormsModule ],
+  standalone: true,
+  imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
 })
 export class LoginComponent {
+
   email = '';
   password = '';
   message = '';
@@ -20,7 +21,7 @@ export class LoginComponent {
     private http: HttpClient,
     private router: Router,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   showSuccess(message: string) {
     this.toastr.success(message);

@@ -6,8 +6,12 @@ import { RouterModule } from '@angular/router';
   standalone: true,
   imports: [RouterModule],
   templateUrl: './dashboard.component.html',
-  
+
 })
 export class DashboardComponent {
+
+  manage = 'images/manage.jpeg';
+  product = 'images/product.jpg';
+  salary = 'images/salary.jpg';
 
 }
