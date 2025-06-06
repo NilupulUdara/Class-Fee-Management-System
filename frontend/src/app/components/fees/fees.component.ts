@@ -1,9 +1,10 @@
-import { Component, inject, signal, effect } from '@angular/core';
+import { Component, inject, signal, effect, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { ToastService } from '../../services/toast.service';
 import { ModalService } from '../../services/modal.service';
+import { FeesService } from './fees.service';
 
 interface Student {
   sid: string;
@@ -23,7 +24,7 @@ interface Subject {
   templateUrl: './fees.component.html',
 })
 export class FeesComponent {
-  private http = inject(HttpClient);
+  private feesService = inject(FeesService);
   private toast = inject(ToastService);
   private modal = inject(ModalService);
 
@@ -54,22 +55,22 @@ export class FeesComponent {
     const months: string[] = [];
     for (let i = 0; i < 3; i++) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      const formatted = `${d.toLocaleString('default', {
-        month: 'long',
-      })} ${d.getFullYear()}`;
+      const formatted = `${d.toLocaleString('default', { month: 'long' })} ${d.getFullYear()}`;
       months.push(formatted);
     }
     this.availableMonths.set(months);
     this.selectedMonthYear.set(months[0]);
   }
 
+  isSubjectSelected(subject: Subject): boolean {
+    return this.selectedSubjects().some(s => s.subjectCode === subject.subjectCode);
+  }
+
   async fetchStudents() {
     this.isLoading.set(true);
     try {
-      const res = await this.http
-        .get<Student[]>('http://localhost:5000/Student/get-students')
-        .toPromise();
-      this.studentsList.set(res || []);
+      const students = await firstValueFrom(this.feesService.getStudents()) as Student[];
+      this.studentsList.set(students || []);
     } catch {
       this.toast.showError('Failed to fetch students');
     } finally {
@@ -80,10 +81,8 @@ export class FeesComponent {
   async fetchSubjects() {
     this.isLoading.set(true);
     try {
-      const res = await this.http
-        .get<Subject[]>('http://localhost:5000/subject/get-subjects')
-        .toPromise();
-      this.subjects.set(res || []);
+      const subjects = await firstValueFrom(this.feesService.getSubjects()) as Subject[];
+      this.subjects.set(subjects || []);
     } catch {
       this.toast.showError('Failed to fetch subjects');
     } finally {
@@ -91,10 +90,22 @@ export class FeesComponent {
     }
   }
 
-  updateSelectedStudentById(sid: string) {
+  updateSelectedStudentById(event: Event) {
+    const target = event.target as HTMLSelectElement | null;
+    if (!target) return; // safeguard for null
+
+    const sid = target.value;
     const student = this.studentsList().find(s => s.sid === sid);
     this.selectedStudent.set(student || null);
   }
+
+  updateSelectedMonthYear(event: Event) {
+    const target = event.target as HTMLSelectElement | null;
+    if (target) {
+      this.selectedMonthYear.set(target.value);
+    }
+  }
+
 
   toggleSubject(subject: Subject) {
     const current = this.selectedSubjects();
@@ -107,27 +118,33 @@ export class FeesComponent {
   }
 
   async handleGenerateReceipt() {
+    if (!this.selectedStudent()) {
+      this.toast.showError('Please select a student');
+      return;
+    }
+    if (this.selectedSubjects().length === 0) {
+      this.toast.showError('Please select at least one subject');
+      return;
+    }
+
     this.isLoading.set(true);
     try {
       const receiptNum = `REC-${Date.now().toString().slice(-6)}`;
       this.receiptNumber.set(receiptNum);
 
-      const student = this.selectedStudent();
-      if (!student) return;
-
-      const res: any = await this.http
-        .post('http://localhost:5000/feerecord/create', {
-          studentId: student.sid,
+      const res = await firstValueFrom(
+        this.feesService.createReceipt({
+          studentId: this.selectedStudent()!.sid,
           monthYear: this.selectedMonthYear(),
           totalAmount: this.totalFee(),
         })
-        .toPromise();
+      );
 
-      if (res?.success) {
+      if ((res as any)?.success) {
         this.toast.showSuccess('Receipt generated successfully!');
         this.isModalOpen.set(true);
       } else {
-        this.toast.showError(res?.message || 'Failed to generate receipt');
+        this.toast.showError((res as any)?.message || 'Failed to generate receipt');
       }
     } catch (err: any) {
       this.toast.showError(err?.error?.message || 'Error generating receipt');
@@ -136,10 +153,17 @@ export class FeesComponent {
     }
   }
 
+  formattedTotalFee(): string {
+  const fee = this.totalFee();
+  return typeof fee === 'number' && !isNaN(fee) ? fee.toFixed(2) : '0.00';
+}
+
+
   handleClear() {
     this.selectedStudent.set(null);
     this.selectedSubjects.set([]);
     this.totalFee.set(0);
+    this.receiptNumber.set('');
   }
 
   handlePrint() {
