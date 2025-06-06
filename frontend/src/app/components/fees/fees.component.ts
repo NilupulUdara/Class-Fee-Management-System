@@ -1,4 +1,4 @@
-import { Component, inject, signal, effect, computed } from '@angular/core';
+import { Component, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
@@ -37,17 +37,16 @@ export class FeesComponent {
   isLoading = signal(false);
   receiptNumber = signal('');
   isModalOpen = signal(false);
-  totalFee = signal(0);
+
+  // ✅ Use computed for totalFee
+  totalFee = computed(() => {
+    return this.selectedSubjects().reduce((sum, subject) => sum + Number(subject.fee), 0);
+  });
 
   constructor() {
     this.generateAvailableMonths();
     this.fetchStudents();
     this.fetchSubjects();
-
-    effect(() => {
-      const total = this.selectedSubjects().reduce((sum, s) => sum + s.fee, 0);
-      this.totalFee.set(total);
-    });
   }
 
   generateAvailableMonths() {
@@ -92,7 +91,7 @@ export class FeesComponent {
 
   updateSelectedStudentById(event: Event) {
     const target = event.target as HTMLSelectElement | null;
-    if (!target) return; // safeguard for null
+    if (!target) return;
 
     const sid = target.value;
     const student = this.studentsList().find(s => s.sid === sid);
@@ -105,7 +104,6 @@ export class FeesComponent {
       this.selectedMonthYear.set(target.value);
     }
   }
-
 
   toggleSubject(subject: Subject) {
     const current = this.selectedSubjects();
@@ -154,15 +152,13 @@ export class FeesComponent {
   }
 
   formattedTotalFee(): string {
-  const fee = this.totalFee();
-  return typeof fee === 'number' && !isNaN(fee) ? fee.toFixed(2) : '0.00';
-}
-
+    const fee = this.totalFee();
+    return typeof fee === 'number' && !isNaN(fee) ? fee.toFixed(2) : '0.00';
+  }
 
   handleClear() {
     this.selectedStudent.set(null);
     this.selectedSubjects.set([]);
-    this.totalFee.set(0);
     this.receiptNumber.set('');
   }
 
